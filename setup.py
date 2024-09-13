@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 setup(
   name = 'coupe-utils',         # How you named your package folder (MyLib)
   packages = ['coupe-utils'],   # Chose the same as "name"
