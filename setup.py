@@ -8,7 +8,6 @@ setup(
   author = 'Teo Soares',                   # Type in your name
   author_email = 'hello@teo.works',      # Type in your E-Mail
   url = 'https://github.com/teossaurus/coupe-utils-library',   # Provide either the link to your github or to your website
-  download_url = 'https://github.com/user/reponame/archive/v_01.tar.gz',    # I explain this later on
   keywords = [],   # Keywords that define your package best
   install_requires=[
       'annotated-types',
