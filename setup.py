@@ -2,7 +2,7 @@ from setuptools import setup
 setup(
   name = 'coupe-utils',         # How you named your package folder (MyLib)
   packages = ['coupe-utils'],   # Chose the same as "name"
-  version = '0.1',      # Start with a small number and increase it with every change you make
+  version = '0.1.1',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'Library with utilities for projects.',   # Give a short description about your library
   author = 'Teo Soares',                   # Type in your name
