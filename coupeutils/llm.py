@@ -19,24 +19,45 @@ class LlmUtils:
         prompt: str,
         model_name: str = "gemini-1.5-flash-001",
         temperature: float = 0.0,
-        max_output_tokens: int = 1024,
-        top_k: int = 40,
-        top_p: float = 0.95,
+        max_output_tokens: int = 8000,
         output_format: str = "json",
     ) -> Union[str, Dict]:
         """Sends a prompt to Vertex AI's Gemini and returns the generated text."""
         vertexai.init(project=self.vertex_project_id, location="us-central1")
-        model =     model = GenerativeModel("gemini-1.5-flash-001")
-        response = model.generate_content(
-            prompt,
-            temperature=temperature,
-            max_output_tokens=max_output_tokens,
-            top_k=top_k,
-            top_p=top_p,
-            response_mime_type=(
-                "application/json" if output_format == "json" else "text/plain"
+
+        generation_config = {
+            "temperature": temperature,
+            "max_output_tokens": max_output_tokens,
+            "response_mime_type": "application/json" if output_format == "json" else "text/plain",
+        }
+
+        safety_config = [
+            generative_models.SafetySetting(
+                category=generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                threshold=generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
             ),
+            generative_models.SafetySetting(
+                category=generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT,
+                threshold=generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            ),
+            generative_models.SafetySetting(
+                category=generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                threshold=generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            ),
+            generative_models.SafetySetting(
+                category=generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                threshold=generative_models.HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            ),
+        ]
+
+        model = GenerativeModel(
+            model_name=model_name,
+            generation_config=generation_config,
+            safety_settings=safety_config,
         )
+
+        response = model.generate_content(prompt)
+
         if output_format == "json":
             return self.clean_up_json_text(response.text)
         else:
