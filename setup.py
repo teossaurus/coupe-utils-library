@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="coupeutils",  # How you named your package folder (MyLib)
     packages=find_packages(),  # Chose the same as "name"
-    version="0.0.2",  # Start with a small number and increase it with every change you make
+    version="0.0.3",  # Start with a small number and increase it with every change you make
     license="MIT",  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     description="Library with utilities for projects.",  # Give a short description about your library
     author="Teo Soares",  # Type in your name
@@ -11,6 +11,7 @@ setup(
     url="https://github.com/teossaurus/coupe-utils-library",  # Provide either the link to your github or to your website
     keywords=[],  # Keywords that define your package best
     long_description="Library with utilities for projects.",
+    long_description_content_type='text/markdown',
     install_requires=[
         "annotated-types",
         "anthropic",

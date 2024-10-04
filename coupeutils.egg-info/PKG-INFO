@@ -1,11 +1,12 @@
 Metadata-Version: 2.1
 Name: coupeutils
-Version: 0.0.2
+Version: 0.0.3
 Summary: Library with utilities for projects.
 Home-page: https://github.com/teossaurus/coupe-utils-library
 Author: Teo Soares
 Author-email: hello@teo.works
 License: MIT
+Description-Content-Type: text/markdown
 License-File: LICENSE.txt
 Requires-Dist: annotated-types
 Requires-Dist: anthropic
