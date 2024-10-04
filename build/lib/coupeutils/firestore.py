@@ -1,7 +1,5 @@
-import os
-import logging
 from google.cloud import firestore
-from google.cloud.firestore_v1 import exceptions
+from google.api_core import exceptions
 from typing import Dict, List, Any, Optional, Tuple
 
 

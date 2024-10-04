@@ -1,9 +1,28 @@
 from setuptools import setup, find_packages
+import os
+
+# Get the current version from the dist folder
+dist_folder = 'dist'
+if os.path.exists(dist_folder):
+    wheel_files = [f for f in os.listdir(dist_folder) if f.endswith('.whl')]
+    if wheel_files:
+        latest_wheel = sorted(wheel_files)[-1]
+        current_version = latest_wheel.split('-')[1]
+        # Increment the patch version
+        major, minor, patch = current_version.split('.')
+        new_version = f"{major}.{minor}.{int(patch) + 1}"
+    else:
+        new_version = "0.0.1"  # Default if no wheel files found
+else:
+    new_version = "0.0.1"  # Default if dist folder doesn't exist
+
+print(f"New version: {new_version}")
+
 
 setup(
     name="coupeutils",  # How you named your package folder (MyLib)
     packages=find_packages(),  # Chose the same as "name"
-    version="0.0.5",  # Start with a small number and increase it with every change you make
+    version=new_version,  # Start with a small number and increase it with every change you make
     license="MIT",  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     description="Library with utilities for projects.",  # Give a short description about your library
     author="Teo Soares",  # Type in your name

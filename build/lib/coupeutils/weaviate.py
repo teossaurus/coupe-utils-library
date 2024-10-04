@@ -6,6 +6,7 @@ from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
 from weaviate.classes.query import HybridFusion
 import logging
+from weaviate.collections import Collection
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -126,7 +127,7 @@ class WeaviateUtils:
         ),
         reranker_config: Optional[Configure.Reranker] = None,
         additional_headers: Optional[Dict[str, str]] = None,
-    ) -> weaviate.Collection:
+    ) -> Collection:
         if reranker_config is None and additional_headers is None:
             self.client = self.initiate_weaviate_client()
         else:
