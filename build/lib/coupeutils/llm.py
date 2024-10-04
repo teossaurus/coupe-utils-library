@@ -150,6 +150,7 @@ class LlmUtils:
 class PromptUtils:
     def __init__(self, prompt_file_path: str):
         self.prompt_template = self.load_prompt_from_file(prompt_file_path)
+        self.formatted_prompt = None
 
     @staticmethod
     def load_prompt_from_file(file_path: str) -> str:
@@ -159,8 +160,9 @@ class PromptUtils:
 
     def format_prompt(self, **kwargs) -> str:
         """Formats the loaded prompt template with data and additional keyword arguments."""
+        self.formatted_prompt = self.prompt_template
         for key, value in kwargs.items():
             if isinstance(value, (dict, list)):
                 value = json5.dumps(value)
-            formatted_prompt = formatted_prompt.replace(f"${key}$", str(value))
-        return formatted_prompt
+            self.formatted_prompt = self.formatted_prompt.replace(f"${key}$", str(value))
+        return self.formatted_prompt
