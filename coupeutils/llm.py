@@ -27,7 +27,7 @@ class LlmUtils:
         """Sends a prompt to Vertex AI's Gemini and returns the generated text."""
         vertexai.init(project=self.vertex_project_id, location="us-central1")
         model =     model = GenerativeModel("gemini-1.5-flash-001")
-        response = model.predict(
+        response = model.generate_content(
             prompt,
             temperature=temperature,
             max_output_tokens=max_output_tokens,
