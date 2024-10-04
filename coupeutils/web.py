@@ -16,7 +16,7 @@ class WebUtils:
         try:
             response = requests.get(url)
             response.raise_for_status()
-            return response
+            return response.text
         except requests.exceptions.RequestException as e:
             logging.error(f"Error downloading from URL {url}: {e}")
             return None
@@ -63,7 +63,7 @@ class WebUtils:
             "updated_date": updated_date,
             "content_html": content_html,
         }
-
+    
     @staticmethod
     def extract_main_content(soup: BeautifulSoup) -> Optional[str]:
         """Extracts the main content from a BeautifulSoup object."""
@@ -75,7 +75,6 @@ class WebUtils:
             "div.content",
             "div#main",
             "div.main",
-            "div#main-content",
             "div.main-content",
             "body",
         ]
@@ -83,6 +82,15 @@ class WebUtils:
         for selector in content_selectors:
             main_content = soup.select_one(selector)
             if main_content:
+                # Remove script and style elements
+                for element in main_content(["script", "style"]):
+                    element.decompose()
+                
+                # Remove empty elements
+                for element in main_content.find_all():
+                    if len(element.get_text(strip=True)) == 0:
+                        element.decompose()
+                
                 return str(main_content)
 
         logging.warning("Main content not found using any of the specified selectors.")
