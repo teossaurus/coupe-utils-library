@@ -126,10 +126,10 @@ class FirestoreUtils:
             )
 
     def get_all_documents(self, collection_name: str) -> List[Dict[str, Any]]:
-        """Retrieves all documents from a Firestore collection."""
+        """Retrieves all documents from a Firestore collection, including their UUIDs."""
         try:
             docs = self.db.collection(collection_name).get()
-            return [doc.to_dict() for doc in docs]
+            return [{**doc.to_dict(), 'uuid': doc.id} for doc in docs]
         except Exception as e:
             raise Exception(
                 f"Error retrieving all documents from collection {collection_name}: {str(e)}"
