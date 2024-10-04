@@ -5,6 +5,9 @@ from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import logging
 
 
@@ -63,7 +66,31 @@ class WebUtils:
             "updated_date": updated_date,
             "content_html": content_html,
         }
-    
+
+    def get_text_and_links_selenium(self, url):
+        driver = webdriver.Chrome()  # Or whichever driver you're using
+        driver.get(url)
+
+        # Wait for the body to be present
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.TAG_NAME, "body"))
+        )
+
+        # Extract all text
+        text_content = driver.find_element(By.TAG_NAME, "body").text
+
+        # Extract all hyperlinks
+        links = driver.find_elements(By.TAG_NAME, "a")
+        hyperlinks = [
+            {"text": link.text, "href": link.get_attribute("href")}
+            for link in links
+            if link.get_attribute("href")
+        ]
+
+        driver.quit()
+
+        return text_content, hyperlinks
+
     @staticmethod
     def extract_main_content(soup: BeautifulSoup) -> Optional[str]:
         """Extracts the main content from a BeautifulSoup object."""
@@ -85,12 +112,12 @@ class WebUtils:
                 # Remove script and style elements
                 for element in main_content(["script", "style"]):
                     element.decompose()
-                
+
                 # Remove empty elements
                 for element in main_content.find_all():
                     if len(element.get_text(strip=True)) == 0:
                         element.decompose()
-                
+
                 return str(main_content)
 
         logging.warning("Main content not found using any of the specified selectors.")
