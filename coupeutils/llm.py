@@ -2,8 +2,7 @@ import os
 import logging
 import vertexai
 from vertexai import generative_models
-from vertexai.language_models import TextGenerationModel
-from google.cloud import storage
+from vertexai.generative_models import GenerativeModel
 from typing import Dict, List, Any, Optional, Union
 import anthropic
 from openai import OpenAI
@@ -27,7 +26,7 @@ class LlmUtils:
     ) -> Union[str, Dict]:
         """Sends a prompt to Vertex AI's Gemini and returns the generated text."""
         vertexai.init(project=self.vertex_project_id, location="us-central1")
-        model = TextGenerationModel.from_pretrained(model_name)
+        model =     model = GenerativeModel("gemini-1.5-flash-001")
         response = model.predict(
             prompt,
             temperature=temperature,
