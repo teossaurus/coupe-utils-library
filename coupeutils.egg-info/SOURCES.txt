@@ -1,0 +1,15 @@
+LICENSE.txt
+setup.cfg
+setup.py
+coupeutils/__init__.py
+coupeutils/firestore.py
+coupeutils/gcs.py
+coupeutils/llm.py
+coupeutils/queue_utils.py
+coupeutils/weaviate.py
+coupeutils/web.py
+coupeutils.egg-info/PKG-INFO
+coupeutils.egg-info/SOURCES.txt
+coupeutils.egg-info/dependency_links.txt
+coupeutils.egg-info/requires.txt
+coupeutils.egg-info/top_level.txt
