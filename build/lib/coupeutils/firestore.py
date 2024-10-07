@@ -43,7 +43,7 @@ class FirestoreUtils:
                     data.get("document_id", None)
                 )
                 if "id" not in data:
-                    data["id"] = doc_ref.id
+                    data["document_id"] = doc_ref.id
                 batch.set(doc_ref, data)
             batch.commit()
         except Exception as e:
@@ -66,8 +66,8 @@ class FirestoreUtils:
                 if document_id
                 else self.db.collection(collection_name).document()
             )
-            if "id" not in data:
-                data["id"] = doc_ref.id
+            if "document_id" not in data:
+                data["document_id"] = doc_ref.id
             doc_ref.set(data)
         except Exception as e:
             raise Exception(
