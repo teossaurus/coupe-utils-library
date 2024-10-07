@@ -42,6 +42,8 @@ class FirestoreUtils:
                 doc_ref = self.db.collection(collection_name).document(
                     data.get("document_id", None)
                 )
+                if "id" not in data:
+                    data["id"] = doc_ref.id
                 batch.set(doc_ref, data)
             batch.commit()
         except Exception as e:
@@ -64,6 +66,8 @@ class FirestoreUtils:
                 if document_id
                 else self.db.collection(collection_name).document()
             )
+            if "id" not in data:
+                data["id"] = doc_ref.id
             doc_ref.set(data)
         except Exception as e:
             raise Exception(
@@ -129,7 +133,7 @@ class FirestoreUtils:
         """Retrieves all documents from a Firestore collection, including their UUIDs."""
         try:
             docs = self.db.collection(collection_name).get()
-            return [{**doc.to_dict(), 'uuid': doc.id} for doc in docs]
+            return [{**doc.to_dict(), "uuid": doc.id} for doc in docs]
         except Exception as e:
             raise Exception(
                 f"Error retrieving all documents from collection {collection_name}: {str(e)}"
@@ -143,7 +147,9 @@ class FirestoreUtils:
         except Exception as e:
             raise Exception(f"Error deleting document {document_id}: {str(e)}")
 
-    def bulk_delete_documents(self, document_ids: List[str], collection_name: str) -> None:
+    def bulk_delete_documents(
+        self, document_ids: List[str], collection_name: str
+    ) -> None:
         """Deletes multiple documents from Firestore using batch operations."""
         try:
             batch = self.db.batch()
