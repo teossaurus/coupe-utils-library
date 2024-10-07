@@ -17,6 +17,7 @@ class LlmUtils:
     def send_to_vertex_ai(
         self,
         prompt: str,
+        system_instruction=None,
         model_name: str = "gemini-1.5-flash-001",
         temperature: float = 0.0,
         max_output_tokens: int = 8000,
@@ -28,7 +29,9 @@ class LlmUtils:
         generation_config = {
             "temperature": temperature,
             "max_output_tokens": max_output_tokens,
-            "response_mime_type": "application/json" if output_format == "json" else "text/plain",
+            "response_mime_type": (
+                "application/json" if output_format == "json" else "text/plain"
+            ),
         }
 
         safety_config = [
@@ -50,11 +53,20 @@ class LlmUtils:
             ),
         ]
 
-        model = GenerativeModel(
-            model_name=model_name,
-            generation_config=generation_config,
-            safety_settings=safety_config,
-        )
+        if system_instruction:
+            model = GenerativeModel(
+                system_instruction=system_instruction,
+                model_name=model_name,
+                generation_config=generation_config,
+                safety_settings=safety_config,
+            )
+
+        else:
+            model = GenerativeModel(
+                model_name=model_name,
+                generation_config=generation_config,
+                safety_settings=safety_config,
+            )
 
         response = model.generate_content(prompt)
 
@@ -184,5 +196,7 @@ class PromptUtils:
         for key, value in kwargs.items():
             if isinstance(value, (dict, list)):
                 value = json5.dumps(value)
-            self.formatted_prompt = self.formatted_prompt.replace(f"${key}$", str(value))
+            self.formatted_prompt = self.formatted_prompt.replace(
+                f"${key}$", str(value)
+            )
         return self.formatted_prompt
