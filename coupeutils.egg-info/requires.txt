@@ -39,6 +39,7 @@ httpx
 huggingface-hub
 idna
 jiter
+json
 json5
 numpy
 openai

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: coupeutils
-Version: 0.0.22
+Version: 0.0.23
 Summary: Library with utilities for projects.
 Home-page: https://github.com/teossaurus/coupe-utils-library
 Author: Teo Soares
@@ -49,6 +49,7 @@ Requires-Dist: httpx
 Requires-Dist: huggingface-hub
 Requires-Dist: idna
 Requires-Dist: jiter
+Requires-Dist: json
 Requires-Dist: json5
 Requires-Dist: numpy
 Requires-Dist: openai

@@ -5,7 +5,7 @@ import os
 setup(
     name="coupeutils",  # How you named your package folder (MyLib)
     packages=find_packages(),  # Chose the same as "name"
-    version="0.0.22",  # Start with a small number and increase it with every change you make
+    version="0.0.23",  # Start with a small number and increase it with every change you make
     license="MIT",  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     description="Library with utilities for projects.",  # Give a short description about your library
     author="Teo Soares",  # Type in your name
@@ -56,6 +56,7 @@ setup(
         "huggingface-hub",
         "idna",
         "jiter",
+        "json",
         "json5",
         "numpy",
         "openai",
