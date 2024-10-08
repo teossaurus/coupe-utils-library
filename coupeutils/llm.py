@@ -202,10 +202,7 @@ class LlmUtils:
             output_format="json"
         )
         
-        try:
-            return json.loads(response)
-        except json.JSONDecodeError as e:
-            return {"error": f"Failed to parse JSON even with JSON assist: {str(e)}", "original_response": response}
+        return response
 
 
 class PromptUtils:
