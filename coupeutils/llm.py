@@ -150,7 +150,10 @@ class LlmUtils:
         use_json_assist: bool = False,
     ) -> Union[str, Dict]:
         """Sends a prompt to OpenAI and returns the generated text."""
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        openai_api_key = os.environ.get("OPENAI_API_KEY")
+        if not openai_api_key:
+            raise ValueError("OpenAI API key not found in environment variables.")
+        client = OpenAI(api_key=openai_api_key)
         response = client.chat.completions.create(
             model=model_name,
             messages=[{"role": "user", "content": prompt}],
@@ -193,7 +196,7 @@ class LlmUtils:
         
         response = LlmUtils.send_to_openai(
             prompt=formatted_prompt,
-            model_name="gpt-4-turbo-preview",
+            model_name="gpt-4o-mini",
             temperature=0.0,
             max_tokens=16383,
             output_format="json"
