@@ -189,7 +189,7 @@ class LlmUtils:
     def _json_assist(invalid_json: str) -> Dict[str, Any]:
         print("Attempting JSON assist...")
         prompt_tempate = "The json above is not a valid json. Format it as valid json. Respond with the complete valid json."
-        formatted_prompt = "\n\n".join(invalid_json, prompt_tempate)
+        formatted_prompt = "\n\n".join([invalid_json, prompt_tempate])
         
         response = LlmUtils.send_to_openai(
             prompt=formatted_prompt,
