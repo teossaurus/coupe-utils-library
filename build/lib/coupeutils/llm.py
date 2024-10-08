@@ -8,6 +8,7 @@ import anthropic
 from openai import OpenAI
 import json5
 import re
+import json
 
 
 class LlmUtils:
@@ -22,6 +23,7 @@ class LlmUtils:
         temperature: float = 0.0,
         max_output_tokens: int = 8000,
         output_format: str = "json",
+        use_json_assist: bool = False,
     ) -> Union[str, Dict]:
         """Sends a prompt to Vertex AI's Gemini and returns the generated text."""
         vertexai.init(project=self.vertex_project_id, location="us-central1")
@@ -71,7 +73,7 @@ class LlmUtils:
         response = model.generate_content(prompt)
 
         if output_format == "json":
-            return self.clean_up_json_text(response.text)
+            return self.clean_up_json_text(response.text, use_json_assist)
         else:
             return response.text
 
@@ -83,6 +85,7 @@ class LlmUtils:
         temperature: float = 0.0,
         max_output_tokens: int = 1024,
         output_format: str = "json",
+        use_json_assist: bool = False,
     ) -> Union[str, Dict]:
         """Sends a multimodal prompt (text and files - PDFs or images) to Vertex AI's Gemini."""
         vertexai.init(project=self.vertex_project_id, location="us-central1")
@@ -111,7 +114,7 @@ class LlmUtils:
             },
         )
         if output_format == "json":
-            return self.clean_up_json_text(response.text)
+            return self.clean_up_json_text(response.text, use_json_assist)
         else:
             return response.text
 
@@ -122,6 +125,7 @@ class LlmUtils:
         max_tokens_to_sample: int = 4000,
         temperature: float = 0.0,
         output_format: str = "json",
+        use_json_assist: bool = False,
     ) -> Union[str, Dict]:
         """Sends a prompt to Anthropic's Claude and returns the generated text."""
         client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
@@ -132,7 +136,7 @@ class LlmUtils:
             prompt=prompt,
         )
         if output_format == "json":
-            return {"text": response.completion}
+            return LlmUtils.clean_up_json_text({"text": response.completion}, use_json_assist)
         else:
             return response.completion
 
@@ -143,6 +147,7 @@ class LlmUtils:
         temperature: float = 0.0,
         max_tokens: int = 1024,
         output_format: str = "json",
+        use_json_assist: bool = False,
     ) -> Union[str, Dict]:
         """Sends a prompt to OpenAI and returns the generated text."""
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -156,12 +161,12 @@ class LlmUtils:
             ),
         )
         if output_format == "json":
-            return response.choices[0].message.content
+            return LlmUtils.clean_up_json_text(response.choices[0].message.content, use_json_assist)
         else:
             return response.choices[0].message.content.text
 
     @staticmethod
-    def clean_up_json_text(text: str) -> Dict[str, Any]:
+    def clean_up_json_text(text: str, use_json_assist: bool = False) -> Dict[str, Any]:
         text = text.replace("```json", "")
         text = text.replace("```", "")
         text = text.strip()
@@ -174,9 +179,29 @@ class LlmUtils:
         try:
             return json5.loads(text)
         except ValueError as e:
-            print(f"Failed to parse JSON5. Input string: {text}")
-            print(f"JSON5 parsing error: {str(e)}")
-            raise  # Re-raise the ValueError to be handled up the stack
+            if use_json_assist:
+                return LlmUtils._json_assist(text)
+            else:
+                {"error": f"Failed to parse JSON: {str(e)}", "original_response": text}
+                raise  # Re-raise the ValueError to be handled up the stack
+
+    @staticmethod
+    def _json_assist(invalid_json: str) -> Dict[str, Any]:
+        prompt_utils = PromptUtils("coupeutils/prompts/json_assist.txt")
+        formatted_prompt = prompt_utils.format_prompt(INVALID_JSON=invalid_json)
+        
+        response = LlmUtils.send_to_openai(
+            prompt=formatted_prompt,
+            model_name="gpt-4-turbo-preview",
+            temperature=0.0,
+            max_tokens=16383,
+            output_format="json"
+        )
+        
+        try:
+            return json.loads(response)
+        except json.JSONDecodeError as e:
+            return {"error": f"Failed to parse JSON even with JSON assist: {str(e)}", "original_response": response}
 
 
 class PromptUtils:
