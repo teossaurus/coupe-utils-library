@@ -123,7 +123,7 @@ class WeaviateUtils:
         self,
         collection_name: str,
         vectorizer_config: Configure.Vectorizer = Configure.Vectorizer.text2vec_openai(
-            model="text-embedding-ada-002"
+            model="text-embedding-3-small"
         ),
         reranker_config: Optional[Configure.Reranker] = None,
         additional_headers: Optional[Dict[str, str]] = None,
