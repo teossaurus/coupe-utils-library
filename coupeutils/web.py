@@ -37,7 +37,7 @@ class WebUtils:
         return None
 
     @staticmethod
-    def get_page_content_selenium(url: str) -> Dict[str, Optional[str]]:
+    def get_page_content_selenium(url: str, headers: Optional[Dict[str, str]] = None) -> Dict[str, Optional[str]]:
         """Retrieves page content using Selenium for JavaScript rendering."""
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -45,6 +45,14 @@ class WebUtils:
         chrome_options.add_argument("--disable-dev-shm-usage")
 
         driver = webdriver.Chrome(options=chrome_options)
+
+        # Set custom headers if provided
+        if headers:
+            driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": headers.get("User-Agent", "")})
+            driver.execute_cdp_cmd('Network.enable', {})
+            for key, value in headers.items():
+                driver.execute_cdp_cmd('Network.setExtraHTTPHeaders', {"headers": {key: value}})
+
         driver.get(url)
 
         driver.implicitly_wait(10)
