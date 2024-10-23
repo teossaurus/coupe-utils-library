@@ -121,24 +121,34 @@ class LlmUtils:
     @staticmethod
     def send_to_anthropic(
         prompt: str,
-        model_name: str = "claude-3-5-sonnet-20240620",
-        max_tokens_to_sample: int = 4000,
+        model_name: str = "claude-3-5-sonnet-20241022",
+        max_tokens: int = 1000,
         temperature: float = 0.0,
         output_format: str = "json",
         use_json_assist: bool = False,
     ) -> Union[str, Dict]:
         """Sends a prompt to Anthropic's Claude and returns the generated text."""
         client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
-        response = client.completions.create(
+        response = client.messages.create(
             model=model_name,
-            max_tokens_to_sample=max_tokens_to_sample,
+            max_tokens=max_tokens,
             temperature=temperature,
-            prompt=prompt,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": prompt
+                        }
+                    ]
+                }
+            ]
         )
         if output_format == "json":
-            return LlmUtils.clean_up_json_text({"text": response.completion}, use_json_assist)
+            return LlmUtils.clean_up_json_text({"text": response.content}, use_json_assist)
         else:
-            return response.completion
+            return response.content
 
     @staticmethod
     def send_to_openai(
