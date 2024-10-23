@@ -179,7 +179,10 @@ class LlmUtils:
             return response.choices[0].message.content.text
 
     @staticmethod
-    def clean_up_json_text(text: str, use_json_assist: bool = False) -> Dict[str, Any]:
+    def clean_up_json_text(text: Union[str, Dict[str, Any]], use_json_assist: bool = False) -> Dict[str, Any]:
+        if isinstance(text, dict):
+            return text
+
         text = text.replace("```json", "")
         text = text.replace("```", "")
         text = text.strip()
