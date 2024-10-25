@@ -127,6 +127,7 @@ class LlmUtils:
         output_format: str = "json",
         use_json_assist: bool = False,
     ) -> Union[str, Dict]:
+        
         """Sends a prompt to Anthropic's Claude and returns the generated text."""
         client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
         response = client.messages.create(
@@ -146,9 +147,9 @@ class LlmUtils:
             ]
         )
         output = response.content
-        response_text = json.loads(output[0].text)["text"]
+        response_text = output[0].text
         if output_format == "json":
-            return LlmUtils.clean_up_json_text({"text": response_text}, use_json_assist)
+            return LlmUtils.clean_up_json_text(response_text, use_json_assist)
         else:
             return response_text
 
