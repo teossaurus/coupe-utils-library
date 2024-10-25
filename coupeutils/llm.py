@@ -145,10 +145,12 @@ class LlmUtils:
                 }
             ]
         )
+        output = response.content
+        response_text = output["text"][0].text
         if output_format == "json":
-            return LlmUtils.clean_up_json_text({"text": response.content}, use_json_assist)
+            return LlmUtils.clean_up_json_text({"text": response_text}, use_json_assist)
         else:
-            return response.content
+            return response_text
 
     @staticmethod
     def send_to_openai(
