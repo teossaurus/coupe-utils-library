@@ -146,7 +146,7 @@ class LlmUtils:
             ]
         )
         output = response.content
-        response_text = output[0].text
+        response_text = output[0].text["text"]
         if output_format == "json":
             return LlmUtils.clean_up_json_text({"text": response_text}, use_json_assist)
         else:
